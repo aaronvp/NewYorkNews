@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "963723183420",
+    "firebase_url": "https://newyorknews-4b5ac.firebaseio.com",
+    "project_id": "newyorknews-4b5ac",
+    "storage_bucket": "newyorknews-4b5ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963723183420:android:00cceb9936a5943f124a39",
+        "android_client_info": {
+          "package_name": "com.example.aaronvp.newyorknews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "963723183420-gep66cnndje7oc1kqu3vauoe62gpiuuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcn7-pZt6pwQgfIQaDjNSBq3bGKWmaTRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963723183420-gep66cnndje7oc1kqu3vauoe62gpiuuf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
