@@ -1,4 +1,4 @@
-package com.example.aaronvp.newyorknews.ui;
+package com.example.aaronvp.newyorknews.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,44 +18,42 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
-    TextView registerTextView;
+    EditText firstName;
+    EditText lastName;
     EditText email;
     EditText password;
-    Button loginButton;
+    Button registerButton;
+    TextView loginTextView;
     FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-        email = findViewById(R.id.editTextEmail);
-        password = findViewById(R.id.editTextPassword);
-        loginButton = findViewById(R.id.loginButton);
+        setContentView(R.layout.activity_register);
+        loginTextView = this.findViewById(R.id.textViewLogin);
+        firstName = this.findViewById(R.id.editTextFirstName);
+        lastName = this.findViewById(R.id.editTextLastName);
+        email = this.findViewById(R.id.editTextEmail);
+        password = this.findViewById(R.id.editTextPassword);
+        registerButton = this.findViewById(R.id.button);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        if (firebaseAuth.getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-        }
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validateRegistration()) {
-                    login();
+                    registerUser();
                 }
             }
         });
 
-        registerTextView = this.findViewById(R.id.textViewRegister);
-        registerTextView.setOnClickListener(new View.OnClickListener() {
+        loginTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivity(intent);
+                onBackPressed();
             }
         });
     }
@@ -86,19 +84,22 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    private void login() {
-        firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim())
+    /**
+     * Register User
+     */
+    private void registerUser() {
+        firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                          if (task.isSuccessful()) {
-                              Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
-                              startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                              finish();
-                          } else {
-                              Toast.makeText(getApplicationContext(), "Error! " + task.getException().getMessage(),
-                                      Toast.LENGTH_SHORT).show();
-                          }
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "User created successfully.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), ArticleListActivity.class));
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error! " + task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
                     }
                 });
     }

@@ -6,6 +6,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -18,7 +20,13 @@ public class Article implements Parcelable {
    private Headline headline;
 
    @SerializedName("multimedia")
-   private Multimedia multimedia;
+   private List<Multimedia> multimedia;
+
+   @SerializedName("byline")
+   private ByLine byLine;
+
+   @SerializedName("lead_paragraph")
+   private String leadParagraph;
 
    @SerializedName("document_type")
    public String documentType;
@@ -53,8 +61,15 @@ public class Article implements Parcelable {
    @SerializedName("word_count")
    public String wordCount;
 
+   public Article() {
+   }
+
    protected Article(Parcel in) {
       articleId = in.readString();
+      headline = in.readParcelable(Headline.class.getClassLoader());
+      multimedia = in.createTypedArrayList(Multimedia.CREATOR);
+      byLine = in.readParcelable(ByLine.class.getClassLoader());
+      leadParagraph = in.readString();
       documentType = in.readString();
       newsDesk = in.readString();
       if (in.readByte() == 0) {
@@ -96,6 +111,10 @@ public class Article implements Parcelable {
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeString(articleId);
+      dest.writeParcelable(headline, flags);
+      dest.writeTypedList(multimedia);
+      dest.writeParcelable(byLine, flags);
+      dest.writeString(leadParagraph);
       dest.writeString(documentType);
       dest.writeString(newsDesk);
       if (printPage == null) {

@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:padding="@dimen/widget_margin"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/widgetImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:layout_margin="8dp"
+        android:src="@drawable/newspaper"
+        android:contentDescription="TODO" />
+
+    <TextView
+        android:id="@+id/appwidget_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:gravity="start"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/scrim_reverse"
+        android:contentDescription="@string/appwidget_text"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:text="@string/login_title"/>
+
+    <TextView
+        android:id="@+id/appwidget_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:gravity="start"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/scrim"
+        android:contentDescription="@string/appwidget_text"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:text="@string/appwidget_text"/>
+
+</RelativeLayout>

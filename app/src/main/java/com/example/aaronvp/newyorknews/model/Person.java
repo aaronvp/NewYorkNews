@@ -31,6 +31,7 @@ public class Person implements Parcelable {
     @SerializedName("title")
     private String title;
 
+    public Person() {}
 
     protected Person(Parcel in) {
         firstName = in.readString();

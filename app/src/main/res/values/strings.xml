@@ -1,6 +1,18 @@
 <resources>
+
     <string name="app_name">NewYorkNews</string>
     <string name="login_title">New York News</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="app_header_logo">New York News Logo</string>
+    <string name="article_image">Article Image</string>
+
+    <string name="title_article_list">Articles</string>
+    <string name="title_article_detail">Article Detail</string>
+
+    <!--Widget-->
+    <string name="appwidget_text">All the latest news direct from the New York Times</string>
+    <string name="add_widget">Add widget</string>
+
+    <string name="article_time_min">m ago</string>
+    <string name="article_time_hour">hr ago</string>
 </resources>
