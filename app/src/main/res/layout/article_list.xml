@@ -7,8 +7,8 @@
     android:name="com.example.aaronvp.newyorknews.ui.ArticleListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginStart="@dimen/recycler_view_margin"
+    android:layout_marginEnd="@dimen/recycler_view_margin"
     app:layoutManager="LinearLayoutManager"
     tools:context=".ui.activity.ArticleListActivity"
     tools:listitem="@layout/article_list_content"/>

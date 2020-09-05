@@ -11,37 +11,37 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/widget_margin"
         android:src="@drawable/newspaper"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/widget_article_image" />
 
     <TextView
         android:id="@+id/appwidget_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:padding="8dp"
+        android:layout_margin="@dimen/widget_margin"
+        android:padding="@dimen/widget_padding"
         android:gravity="start"
         android:layout_alignParentTop="true"
         android:background="@drawable/scrim_reverse"
         android:contentDescription="@string/appwidget_text"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="@dimen/widget_headline_text_size"
         android:text="@string/login_title"/>
 
     <TextView
         android:id="@+id/appwidget_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:padding="8dp"
+        android:layout_margin="@dimen/widget_margin"
+        android:padding="@dimen/widget_padding"
         android:gravity="start"
         android:layout_alignParentBottom="true"
         android:background="@drawable/scrim"
         android:contentDescription="@string/appwidget_text"
         android:textColor="@android:color/white"
-        android:textSize="12sp"
+        android:textSize="@dimen/widget_headline_text_size"
         android:text="@string/appwidget_text"/>
 
 </RelativeLayout>

@@ -14,10 +14,9 @@
             android:id="@+id/sports_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="4dp"
+            android:paddingTop="@dimen/recycler_view_padding_top"
             android:background="@android:color/background_dark"
             android:visibility="gone"/>
-
     </LinearLayout>
 
     <ProgressBar
