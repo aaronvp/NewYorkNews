@@ -13,12 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.aaronvp.newyorknews.ArticleProcessor;
 import com.example.aaronvp.newyorknews.ArticleService;
 import com.example.aaronvp.newyorknews.R;
 import com.example.aaronvp.newyorknews.model.Article;
 import com.example.aaronvp.newyorknews.model.ArticleCategory;
 import com.example.aaronvp.newyorknews.model.ArticleSearch;
-import com.example.aaronvp.newyorknews.model.ArticleWrapper;
 import com.example.aaronvp.newyorknews.ui.activity.ArticleListActivity;
 import com.example.aaronvp.newyorknews.ui.adapter.ArticleAdapter;
 import com.google.firebase.database.DataSnapshot;
@@ -27,19 +27,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Getter;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE_CHILD;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.FETCH_ARTICLES;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.INTENT_KEY_NEWS_DESK_VALUE;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_API_KEY;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_API_SORT_NEWEST;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_BOOKMARKS;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_LABEL;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_LATEST;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_SEARCH_BASE_URL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,10 +59,9 @@ import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_API_KEY;
 
 public class NewsListFragment extends Fragment implements ArticleAdapter.ListItemClickListener {
 
-    private static final String NEWS_DESK_VALUE = "news_desk_value";
+
     private ArticleAdapter articleAdapter;
     private List<Article> articles;
-    public static final String NYT_SEARCH_URL = "https://api.nytimes.com/svc/search/v2/";
     private static Retrofit retrofit;
     private ArticleListActivity articleListActivity;
     private RecyclerView articleRecyclerView;
@@ -75,7 +84,7 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
     public static NewsListFragment newInstance(String newsDeskValue) {
         NewsListFragment fragment = new NewsListFragment();
         Bundle args = new Bundle();
-        args.putString(NEWS_DESK_VALUE, newsDeskValue);
+        args.putString(INTENT_KEY_NEWS_DESK_VALUE, newsDeskValue);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,9 +93,9 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            newsDeskValue = getArguments().getString(NEWS_DESK_VALUE);
+            newsDeskValue = getArguments().getString(INTENT_KEY_NEWS_DESK_VALUE);
             articleListActivity = (ArticleListActivity) getActivity();
-            Log.i("News", "NewsDeskValue " + newsDeskValue);
+            Log.i(NYT_NEWS_CATEGORY_LABEL, newsDeskValue);
         }
     }
 
@@ -109,7 +118,7 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (newsDeskValue.equals("Bookmarks")) {
+        if (newsDeskValue.equals(NYT_NEWS_CATEGORY_BOOKMARKS)) {
             getBookMarkedArticles();
         } else {
             fetchArticles();
@@ -126,9 +135,11 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
     }
 
     private void fetchArticles() {
+        /* Code used for debugging and testing
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        */
         articles = getArticles();
         if (articles != null) {
             setArticles(articles);
@@ -140,53 +151,38 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(NYT_SEARCH_URL)
+                    .baseUrl(NYT_SEARCH_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)
+                    // .client(client) // For debugging only
                     .build();
-            //
         }
 
         ArticleService articleService = retrofit.create(ArticleService.class);
         Call<ArticleSearch> call;
-        switch (newsDeskValue) {
-            case "Sports":
-                call = articleService.getSports();
-                break;
-            case "Business":
-                call = articleService.getBusiness();
-                break;
-            case "Technology":
-                call = articleService.getTech();
-                break;
-            case "Travel":
-                call = articleService.getTravel();
-                break;
-            default:
-                call = articleService.getWorld("World", NYT_API_KEY);
-                break;
+
+        if (newsDeskValue.equals(NYT_NEWS_CATEGORY_LATEST)) {
+            call = articleService.getLatest(NYT_API_SORT_NEWEST, NYT_API_KEY);
+        } else {
+            call = articleService.getArticlesByNewsDesk(getNewsDeskQuery(), NYT_API_SORT_NEWEST, NYT_API_KEY);
         }
+
         call.enqueue(new Callback<ArticleSearch>() {
             @Override
             public void onResponse(@NonNull Call<ArticleSearch> call, @NonNull Response<ArticleSearch> response) {
-                ArticleSearch articleSearch = response.body();
-                if (articleSearch != null) {
-                    ArticleWrapper articleWrapper = articleSearch.getArticleWrapper();
-                    if (articleWrapper != null) {
-                        articles = articleWrapper.getArticles();
-                        articleListActivity.addArticleCategory(newsDeskValue, articles);
-                        setArticles(articles);
-                        progressBar.setVisibility(View.GONE);
-                        articleRecyclerView.setVisibility(View.VISIBLE);
-                        selectFirstArticle();
-                    }
+                articles = ArticleProcessor.validateArticleSearch(response.body());
+                if (articles != null && !articles.isEmpty()) {
+                    articleListActivity.addArticleCategory(newsDeskValue, articles);
+                    setArticles(articles);
+                    progressBar.setVisibility(View.GONE);
+                    articleRecyclerView.setVisibility(View.VISIBLE);
+                    selectFirstArticle();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ArticleSearch> call, @NonNull Throwable t) {
-                Log.e("TAG", "RetroFit " + t.getMessage());
-        }
+                Log.e(FETCH_ARTICLES, Objects.requireNonNull(t.getMessage()));
+            }
         });
     }
 
@@ -201,9 +197,11 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
 
     private List<Article> getArticles() {
         articleListActivity = (ArticleListActivity) getActivity();
-        ArticleCategory articleCategory = articleListActivity.getArticleCategory(newsDeskValue);
-        if (articleCategory != null) {
-            return articleCategory.getArticles();
+        if (articleListActivity != null) {
+            ArticleCategory articleCategory = articleListActivity.getArticleCategory(newsDeskValue);
+            if (articleCategory != null) {
+                return articleCategory.getArticles();
+            }
         }
         return null;
     }
@@ -211,9 +209,9 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
     private void getBookMarkedArticles() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference();
-        databaseReference.child("articles")
+        databaseReference.child(DATABASE_CHILD)
                 .addValueEventListener(new ValueEventListener() {
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         articles = new ArrayList<>();
                         for (DataSnapshot snapshot : children) {
@@ -221,10 +219,10 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
                                 Article article = snapshot.getValue(Article.class);
                                 articles.add(article);
                             } catch (Exception e) {
-                                Log.e("Error", e.getMessage());
+                                Log.e(DATABASE, Objects.requireNonNull(e.getMessage()));
                             }
                         }
-                        articleListActivity.addArticleCategory("Bookmarks", articles);
+                        articleListActivity.addArticleCategory(NYT_NEWS_CATEGORY_BOOKMARKS, articles);
                         setArticles(articles);
                         progressBar.setVisibility(View.GONE);
                         articleRecyclerView.setVisibility(View.VISIBLE);
@@ -232,10 +230,13 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                    public void onCancelled(@NotNull DatabaseError databaseError) {
+                        Log.e(DATABASE, "loadPost:onCancelled", databaseError.toException());
                     }
                 });
+    }
 
+    private String getNewsDeskQuery() {
+        return "news_desk:(" + newsDeskValue + ")";
     }
 }

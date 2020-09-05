@@ -7,6 +7,13 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.aaronvp.newyorknews.ui.fragments.NewsListFragment;
 
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_BOOKMARKS;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_BUSINESS;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_LATEST;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_SCIENCE;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_SPORTS;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_TRAVEL;
+
 public class ArticlesPagerAdapter extends FragmentStateAdapter {
 
     public ArticlesPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -17,20 +24,18 @@ public class ArticlesPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
-            case 0:
-                return NewsListFragment.newInstance("World");
             case 1:
-                return NewsListFragment.newInstance("Sports");
+                return NewsListFragment.newInstance(NYT_NEWS_CATEGORY_SPORTS);
             case 2:
-                return NewsListFragment.newInstance("Business");
+                return NewsListFragment.newInstance(NYT_NEWS_CATEGORY_BUSINESS);
             case 3:
-                return NewsListFragment.newInstance("Technology");
+                return NewsListFragment.newInstance(NYT_NEWS_CATEGORY_SCIENCE);
             case 4:
-                return NewsListFragment.newInstance("Travel");
+                return NewsListFragment.newInstance(NYT_NEWS_CATEGORY_TRAVEL);
             case 5:
-                return NewsListFragment.newInstance("Bookmarks");
+                return NewsListFragment.newInstance(NYT_NEWS_CATEGORY_BOOKMARKS);
             default:
-                return NewsListFragment.newInstance("World");
+                return NewsListFragment.newInstance(NYT_NEWS_CATEGORY_LATEST);
         }
     }
 

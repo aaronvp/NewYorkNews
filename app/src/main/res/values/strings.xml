@@ -2,17 +2,39 @@
 
     <string name="app_name">NewYorkNews</string>
     <string name="login_title">New York News</string>
-
     <string name="app_header_logo">New York News Logo</string>
+
+    <string name="nyt_attribution">Powered by the New York Times</string>
+
     <string name="article_image">Article Image</string>
 
     <string name="title_article_list">Articles</string>
     <string name="title_article_detail">Article Detail</string>
-
+@
     <!--Widget-->
     <string name="appwidget_text">All the latest news direct from the New York Times</string>
     <string name="add_widget">Add widget</string>
 
     <string name="article_time_min">m ago</string>
     <string name="article_time_hour">hr ago</string>
+
+    <!--Login & Registration-->
+    <string name="nyn_logo">New York News Logo</string> ""
+    <string name="reg_success">User created successfully.</string> ""
+    <string name="login_success">Login Successful</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_email_address">Email Address</string>
+    <string name="email_hint">Email Address</string>
+    <string name="hint_password">Login Password</string>
+    <string name="button_text_sign_in">Sign In</string>
+    <string name="button_text_register">Register</string>
+    <string name="register_link_text">Register</string>
+    <string name="login_link_text">Login</string>
+    <string name="err_email_req">Email required</string>
+    <string name="err_password_req">Password required</string>
+    <string name="err_password_length">Password must be >= 6 characters</string>
+
+    <string name="toast_err_prefix">"Error! "</string>
+
 </resources>

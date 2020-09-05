@@ -12,9 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.aaronvp.newyorknews.ArticleProcessor;
 import com.example.aaronvp.newyorknews.R;
 import com.example.aaronvp.newyorknews.model.Article;
-import com.example.aaronvp.newyorknews.model.Multimedia;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -30,8 +30,6 @@ import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_DATE_
 import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_DATE_HOUR_CUTOFF;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_DATE_ICON_PADDING;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_DATE_MINUTE_CUTOFF;
-import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_IMAGE_BASE_URL;
-import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_IMAGE_SUBTYPE;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
@@ -92,7 +90,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         }
 
         void bind(Article article) {
-            String imageURL = getArticleImageURL(article.getMultimedia());
+            String imageURL = ArticleProcessor.getArticleImageURL(article);
             Glide.with(this.itemView)
                     .load(imageURL)
                     .centerCrop()
@@ -120,16 +118,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex);
-    }
-
-    private String getArticleImageURL(List<Multimedia> multimediaList) {
-        try {
-            return NYT_IMAGE_BASE_URL.concat(multimediaList.stream()
-                    .filter(multimedia -> multimedia.getSubType().equals(NYT_IMAGE_SUBTYPE))
-                    .findFirst().get().getUrl());
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**

@@ -1,7 +1,9 @@
 package com.example.aaronvp.newyorknews.ui.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,10 +29,11 @@ import static com.example.aaronvp.newyorknews.ApplicationConstants.EMPTY_STRING;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.INTENT_KEY_ARTICLE;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_BOOKMARKS;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_BUSINESS;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_LATEST;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_SCIENCE;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_SPORTS;
-import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_TECHNOLOGY;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_TRAVEL;
-import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_WORLD;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_WEBSITE;
 
 /**
  * An activity representing a list of Articles. This activity
@@ -58,11 +61,13 @@ public class ArticleListActivity extends AppCompatActivity {
         initToolBar();
         initViewPager();
         initTabLayout();
+        initNewYorkTimesLink();
         receiveWidgetArticle();
     }
 
     /**
      * Set the Article to be displayed
+     *
      * @param article Article to be selected
      */
     public void selectArticle(Article article) {
@@ -76,7 +81,7 @@ public class ArticleListActivity extends AppCompatActivity {
     }
 
     /**
-     *  Store the fetched articles once retrieved
+     * Store the fetched articles once retrieved
      */
     public void addArticleCategory(String newsDesk, List<Article> articles) {
         ArticleCategory articleCategory = getArticleCategory(newsDesk);
@@ -107,13 +112,13 @@ public class ArticleListActivity extends AppCompatActivity {
     private String getNewsDesk(int position) {
         switch (position) {
             case 0:
-                return NYT_NEWS_CATEGORY_WORLD;
+                return NYT_NEWS_CATEGORY_LATEST;
             case 1:
                 return NYT_NEWS_CATEGORY_SPORTS;
             case 2:
                 return NYT_NEWS_CATEGORY_BUSINESS;
             case 3:
-                return NYT_NEWS_CATEGORY_TECHNOLOGY;
+                return NYT_NEWS_CATEGORY_SCIENCE;
             case 4:
                 return NYT_NEWS_CATEGORY_TRAVEL;
             case 5:
@@ -157,6 +162,17 @@ public class ArticleListActivity extends AppCompatActivity {
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager2,
                 (tab, position) -> tab.setText(getNewsDesk(position)));
         tabLayoutMediator.attach();
+    }
+
+    private void initNewYorkTimesLink() {
+        ImageView nytFooter = this.findViewById(R.id.iv_new_york_times);
+        nytFooter.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            intent.setData(Uri.parse(NYT_WEBSITE));
+            startActivity(intent);
+        });
     }
 
     private void receiveWidgetArticle() {

@@ -8,7 +8,7 @@
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"
                 android:propertyName="translationZ"
-                android:valueTo="16dp"
+                android:valueTo="@dimen/object_animator_pressed_value_to"
                 android:valueType="floatType"/>
         </set>
     </item>
@@ -17,7 +17,7 @@
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"
                 android:propertyName="translationZ"
-                android:valueTo="0"
+                android:valueTo="@dimen/object_animator_value_to"
                 android:valueType="floatType"/>
         </set>
     </item>

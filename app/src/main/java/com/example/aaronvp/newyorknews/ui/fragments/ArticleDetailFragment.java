@@ -21,9 +21,9 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.aaronvp.newyorknews.ArticleProcessor;
 import com.example.aaronvp.newyorknews.R;
 import com.example.aaronvp.newyorknews.model.Article;
-import com.example.aaronvp.newyorknews.model.Multimedia;
 import com.example.aaronvp.newyorknews.ui.activity.ArticleDetailActivity;
 import com.example.aaronvp.newyorknews.ui.activity.ArticleListActivity;
 import com.google.android.material.appbar.AppBarLayout;
@@ -35,7 +35,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.List;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE_CHILD;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE_SORT_BY;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.LINE_BREAK;
 
 /**
  * A fragment representing a single Article detail screen.
@@ -52,14 +55,11 @@ public class ArticleDetailFragment extends Fragment {
     private Toolbar toolbar;
     private LinearLayout metaBar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private ArticleDetailActivity articleDetailActivity;
-    private AppBarLayout mAppBarLayout;
     private int metaBarColor;
     private FloatingActionButton floatingActionButton;
     private boolean isBookMarked = false;
     private static FirebaseDatabase firebaseDatabase;
     private static DatabaseReference dbArticles;
-    private static DatabaseReference getDbArticles;
     private Article article;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -87,11 +87,11 @@ public class ArticleDetailFragment extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         if (getActivity() instanceof ArticleDetailActivity) {
-            articleDetailActivity = (ArticleDetailActivity) getActivity();
+            ArticleDetailActivity articleDetailActivity = (ArticleDetailActivity) getActivity();
             articleDetailActivity.setSupportActionBar(toolbar);
         }
 
-        mAppBarLayout = rootView.findViewById(R.id.toolbar_container);
+        AppBarLayout mAppBarLayout = rootView.findViewById(R.id.toolbar_container);
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -143,8 +143,9 @@ public class ArticleDetailFragment extends Fragment {
     public void setArticleData(Article article) {
         this.article = article;
         isArticleBookmarked(article);
-        String image = getArticleImage(article.getMultimedia());
+        String image = ArticleProcessor.getArticleImageURL(article);
 
+        // Load article Image
         Glide.with(rootView)
                 .load(image)
                 .centerCrop()
@@ -152,6 +153,7 @@ public class ArticleDetailFragment extends Fragment {
                 .error(R.drawable.newspaper)
                 .into(articleImage);
 
+        // Convert Image into Bitmap to determine appropriate text color to use
         Glide.with(rootView)
                 .asBitmap()
                 .load(image)
@@ -168,26 +170,15 @@ public class ArticleDetailFragment extends Fragment {
 
         collapsingToolbarLayout.setTitle(article.getHeadline().getMain());
         articleByLine.setText(article.getByLine().getOriginal());
-        String bodyText = article.getLeadParagraph().concat("\n\n").concat(article.getSnippet());
+        String bodyText = article.getLeadParagraph().concat(LINE_BREAK).concat(LINE_BREAK).concat(article.getSnippet());
         articleBody.setText(bodyText);
     }
 
 
-    private String getArticleImage(List<Multimedia> multimediaList) {
-        try {
-            return "https://nytimes.com/" + multimediaList.stream()
-                    .filter(multimedia -> multimedia.getSubType().equals("popup"))
-                    .findFirst().get().getUrl();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     private void setTextColorForImage(Bitmap firstPhoto) {
         Palette.from(firstPhoto)
-                .generate(new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
+                .generate(palette -> {
+                    if (palette != null) {
                         metaBarColor = palette.getDominantColor(Color.WHITE);
                         metaBar.setBackgroundColor(metaBarColor);
                     }
@@ -195,12 +186,12 @@ public class ArticleDetailFragment extends Fragment {
     }
 
     private void isArticleBookmarked(Article article) {
-        getDbArticles = firebaseDatabase.getReference("articles");
-        getDbArticles.orderByChild("articleId").equalTo(article.getArticleId())
+        DatabaseReference getDbArticles = firebaseDatabase.getReference(DATABASE_CHILD);
+        getDbArticles.orderByChild(DATABASE_SORT_BY).equalTo(article.getArticleId())
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        Log.i("News", "Bookmarked Key " + snapshot.getKey());
+                        Log.i(DATABASE, "Bookmarked Article " + snapshot.getKey());
                         isBookMarked = true;
                         floatingActionButton.setSelected(true);
                     }

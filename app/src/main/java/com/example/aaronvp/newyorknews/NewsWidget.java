@@ -22,6 +22,8 @@ import com.example.aaronvp.newyorknews.model.ArticleWrapper;
 import com.example.aaronvp.newyorknews.model.Multimedia;
 import com.example.aaronvp.newyorknews.ui.activity.ArticleListActivity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,6 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.aaronvp.newyorknews.ApplicationConstants.INTENT_KEY_ARTICLE;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_API_KEY;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_API_SORT_NEWEST;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_SEARCH_BASE_URL;
 
 /**
@@ -49,8 +52,7 @@ public class NewsWidget extends AppWidgetProvider {
         // Construct the RemoteViews object
         views = new RemoteViews(context.getPackageName(), R.layout.news_widget);
 
-        //views.setTextViewText(R.id.appwidget_text, widgetText);
-        getWidgetArticle(context, appWidgetManager, appWidgetId );
+        getWidgetArticle(context, appWidgetManager, appWidgetId);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -86,7 +88,7 @@ public class NewsWidget extends AppWidgetProvider {
 
         AppWidgetTarget awt = new AppWidgetTarget(context, R.id.widgetImage, views, appWidgetId) {
             @Override
-            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+            public void onResourceReady(@NotNull Bitmap resource, Transition<? super Bitmap> transition) {
                 super.onResourceReady(resource, transition);
             }
         };
@@ -97,7 +99,8 @@ public class NewsWidget extends AppWidgetProvider {
                 .error(R.drawable.googleg_disabled_color_18);
 
         ArticleService articleService = retrofit.create(ArticleService.class);
-        Call<ArticleSearch> call = articleService.getWorld("World", NYT_API_KEY);
+        Call<ArticleSearch> call = articleService
+                .getLatest(NYT_API_SORT_NEWEST, NYT_API_KEY);
         call.enqueue(new Callback<ArticleSearch>() {
             @Override
             public void onResponse(@NonNull Call<ArticleSearch> call, @NonNull Response<ArticleSearch> response) {

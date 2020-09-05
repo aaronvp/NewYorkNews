@@ -3,20 +3,17 @@ package com.example.aaronvp.newyorknews.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.aaronvp.newyorknews.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -41,25 +38,18 @@ public class RegisterActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateRegistration()) {
-                    registerUser();
-                }
+        registerButton.setOnClickListener(v -> {
+            if (validateRegistration()) {
+                registerUser();
             }
         });
 
-        loginTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        loginTextView.setOnClickListener(v -> onBackPressed());
     }
 
     /**
      * Validate Registration
+     *
      * @return boolean
      */
     private boolean validateRegistration() {
@@ -67,17 +57,17 @@ public class RegisterActivity extends AppCompatActivity {
         String passwordText = password.getText().toString().trim();
 
         if (TextUtils.isEmpty(emailText)) {
-            email.setError("Email required");
+            email.setError(getString(R.string.err_email_req));
             return false;
         }
 
         if (TextUtils.isEmpty(passwordText)) {
-            password.setError("Password required");
+            password.setError(getString(R.string.err_password_req));
             return false;
         }
 
         if (passwordText.length() < 6) {
-            password.setError("Password must be >= 6 characters");
+            password.setError(getString(R.string.err_password_length));
             return false;
         }
 
@@ -89,17 +79,15 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void registerUser() {
         firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "User created successfully.", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), ArticleListActivity.class));
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Error! " + task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.reg_success), Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), ArticleListActivity.class));
+                    } else {
+                        Toast.makeText(getApplicationContext(), getString(R.string.toast_err_prefix) +
+                                        Objects.requireNonNull(task.getException()).getMessage(),
+                                Toast.LENGTH_SHORT).show();
 
-                        }
                     }
                 });
     }

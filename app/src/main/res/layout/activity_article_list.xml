@@ -1,60 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".ui.activity.ArticleListActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
-            android:background="@color/colorWhite">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/lady"
-                android:layout_marginEnd="16dp"
-                android:scaleType="fitCenter"
-                android:contentDescription="@string/app_header_logo"/>
-
-        </androidx.appcompat.widget.Toolbar>
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout_articles"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            android:background="@android:color/white"
-            app:tabTextColor="@color/colorPrimaryDark"
-            app:tabIndicatorColor="@color/colorPrimaryDark"
-            app:tabSelectedTextColor="@android:color/holo_blue_light"
-            app:tabMode="scrollable" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fitsSystemWindows="true"
+        android:layout_above="@+id/iv_new_york_times">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPagerArticles"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:background="@color/colorPrimaryDark">
 
-    </FrameLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="@dimen/toolbar_elevation"
+                android:background="@color/colorWhite">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/nyn_logo"
+                    android:layout_marginEnd="@dimen/toolbar_image_margin_end"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="@string/app_header_logo"/>
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout_articles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabGravity="fill"
+                android:background="@android:color/white"
+                app:tabTextColor="@color/colorPrimaryDark"
+                app:tabIndicatorColor="@color/colorPrimaryDark"
+                app:tabSelectedTextColor="@android:color/holo_blue_light"
+                app:tabMode="scrollable" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPagerArticles"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </FrameLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <ImageView
+        android:id="@+id/iv_new_york_times"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nyt_footer_height"
+        android:src="@drawable/data_nytimes"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center|bottom"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/app_header_logo"/>
+
+</RelativeLayout>

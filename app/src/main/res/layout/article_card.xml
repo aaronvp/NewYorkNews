@@ -6,13 +6,12 @@
     android:id="@+id/cv_article"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
-
-    card_view:cardCornerRadius="10dp"
-    card_view:cardElevation="4dp"
+    android:layout_marginStart="@dimen/card_view_margin_start"
+    android:layout_marginEnd="@dimen/card_view_margin_end"
+    android:layout_marginTop="@dimen/card_view_margin_top"
+    android:layout_marginBottom="@dimen/card_view_margin_bottom"
+    card_view:cardCornerRadius="@dimen/card_view_corner_radius"
+    card_view:cardElevation="@dimen/card_view_elevation"
     android:stateListAnimator="@animator/lift_on_touch"
     android:clickable="true"
     tools:keep="@layout/article_card"
@@ -25,12 +24,12 @@
 
         <ImageView
             android:id="@+id/image_article"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="@dimen/card_view_article_image"
+            android:layout_height="@dimen/card_view_article_image"
+            android:layout_marginStart="@dimen/card_view_margin_start"
+            android:layout_marginTop="@dimen/card_view_margin_default"
             android:adjustViewBounds="true"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/card_view_margin_default"
             android:contentDescription="@string/article_image" />
 
         <LinearLayout
@@ -44,20 +43,20 @@
                 android:id="@+id/article_headline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="@dimen/card_view_margin_default_half"
+                android:layout_marginStart="@dimen/card_view_margin_default"
+                android:layout_marginEnd="@dimen/card_view_margin_default"
                 android:fontFamily="sans-serif"
-                android:textSize="16sp"
+                android:textSize="@dimen/card_view_headline_text_size"
                 android:textColor="@android:color/black"/>
 
             <TextView
                 android:id="@+id/article_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="@dimen/card_view_margin_default_half"
+                android:layout_marginStart="@dimen/card_view_margin_default"
+                android:layout_marginEnd="@dimen/card_view_margin_default"
                 android:fontFamily="sans-serif"
                 android:textSize="14sp"/>
 
