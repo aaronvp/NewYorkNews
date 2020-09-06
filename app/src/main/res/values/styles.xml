@@ -37,16 +37,4 @@
         <item name="android:fontFamily">monospace</item>
     </style>
 
-    <style name="CollapsingToolbarLayoutExpandedTextStyle" parent="AppTheme">
-        <item name="android:textColor">@android:color/transparent</item>
-        <item name="android:textSize">0sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
-    <style name="CollapsingToolbarLayoutCollapsedTextStyle" parent="AppTheme">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">0sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
 </resources>

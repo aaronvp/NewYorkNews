@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -19,12 +18,9 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.aaronvp.newyorknews.model.Article;
 import com.example.aaronvp.newyorknews.model.ArticleSearch;
 import com.example.aaronvp.newyorknews.model.ArticleWrapper;
-import com.example.aaronvp.newyorknews.model.Multimedia;
 import com.example.aaronvp.newyorknews.ui.activity.ArticleListActivity;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -120,7 +116,7 @@ public class NewsWidget extends AppWidgetProvider {
 
                         Glide.with(context.getApplicationContext())
                                 .asBitmap()
-                                .load(getArticleImage(latestArticle.getMultimedia()))
+                                .load(ArticleProcessor.getArticleImageURL(latestArticle))
                                 .placeholder(R.drawable.newspaper)
                                 .error(R.drawable.newspaper)
                                 .apply(options)
@@ -137,16 +133,6 @@ public class NewsWidget extends AppWidgetProvider {
                 Log.e("TAG", "RetroFit " + t.getMessage());
             }
         });
-    }
-
-    private static Uri getArticleImage(List<Multimedia> multimediaList) {
-        try {
-            return Uri.parse("https://nytimes.com/" + multimediaList.stream()
-                    .filter(multimedia -> multimedia.getSubType().equals("popup"))
-                    .findFirst().get().getUrl());
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }

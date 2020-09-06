@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/empire"
-    tools:context=".ui.activity.RegisterActivity">
+    tools:context=".ui.activity.RegisterActivity"
+    tools:ignore="Overdraw">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineTop"
@@ -16,7 +17,6 @@
         app:layout_constraintGuide_percent="0.06"/>
 
     <ImageView
-        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/logo_margin_start_end"
@@ -35,41 +35,12 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.11"/>
 
-    <EditText
-        android:id="@+id/editTextFirstName"
-        android:layout_width="@dimen/zero_width"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/login_first_name_margin_top"
-        android:layout_marginStart="@dimen/login_field_margin_start"
-        android:layout_marginEnd="@dimen/login_field_margin_end"
-        android:ems="10"
-        android:fontFamily="@font/berkshire_swash"
-        android:hint="@string/hint_first_name"
-        android:inputType="textPersonName"
-        android:textSize="@dimen/login_text_size"
-        app:layout_constraintTop_toTopOf="@id/guideline2"
-        app:layout_constraintBottom_toTopOf="@id/editTextLastName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:autofillHints="" />
-
-    <EditText
-        android:id="@+id/editTextLastName"
-        android:layout_width="@dimen/zero_width"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/reg_field_margin_top"
-        android:layout_marginStart="@dimen/login_field_margin_start"
-        android:layout_marginEnd="@dimen/login_field_margin_end"
-        android:ems="10"
-        android:fontFamily="@font/berkshire_swash"
-        android:hint="@string/hint_last_name"
-        android:inputType="textPersonName"
-        android:textSize="@dimen/login_text_size"
-        app:layout_constraintBottom_toTopOf="@id/editTextEmail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextFirstName"
-        android:autofillHints=""/>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.40"/>
 
     <EditText
         android:id="@+id/editTextEmail"
@@ -86,7 +57,7 @@
         app:layout_constraintBottom_toTopOf="@id/editTextPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLastName"
+        app:layout_constraintTop_toBottomOf="@+id/guideline3"
         android:autofillHints=""/>
 
     <EditText

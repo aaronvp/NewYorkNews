@@ -153,7 +153,7 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
             retrofit = new Retrofit.Builder()
                     .baseUrl(NYT_SEARCH_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    // .client(client) // For debugging only
+                 // .client(client) // For debugging only
                     .build();
         }
 

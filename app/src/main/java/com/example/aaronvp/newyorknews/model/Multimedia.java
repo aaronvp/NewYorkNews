@@ -37,8 +37,6 @@ public class Multimedia implements Parcelable {
     @SerializedName("width")
     private Integer width;
 
-    public Multimedia() {}
-
     protected Multimedia(Parcel in) {
         caption = in.readString();
         credit = in.readString();

@@ -10,23 +10,22 @@
     tools:context=".ui.activity.ArticleListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/article_list_app_bar_height"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="8dp"
-            android:paddingBottom="4dp"
+            android:elevation="@dimen/toolbar_elevation"
+            android:paddingBottom="@dimen/toolbar_padding"
             android:background="@color/colorWhite">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/libertyland"
+                android:src="@drawable/nyn_logo_land"
                 android:scaleType="fitCenter"
                 android:contentDescription="@string/app_header_logo"/>
 
@@ -35,7 +34,6 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:baselineAligned="false"
@@ -43,7 +41,6 @@
         tools:layout_editor_absoluteY="64dp">
 
         <RelativeLayout
-            android:id="@+id/frameLayout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -65,26 +62,25 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPagerArticles"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:tag="tab2"
-                android:layout_above="@+id/iv_new_york_times"/>
+                android:layout_height="match_parent"/>
 
         </RelativeLayout>
 
         <View
-            android:layout_width="1dp"
+            android:layout_width="@dimen/separator_width"
             android:layout_height="match_parent"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginStart="@dimen/separator_margin_start"
+            android:layout_marginEnd="@dimen/separator_margin_end"
             android:background="@android:color/darker_gray" />
 
         <fragment
             android:id="@+id/article_detail_fragment"
             class="com.example.aaronvp.newyorknews.ui.fragments.ArticleDetailFragment"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/zero_width"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="@dimen/article_detail_margin_top"
+            tools:ignore="InconsistentLayout" />
 
     </LinearLayout>
 

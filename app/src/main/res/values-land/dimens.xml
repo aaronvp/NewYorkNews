@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Toolbar-->
+    <dimen name="toolbar_elevation">8dp</dimen>
+
+    <!--Login & Registration-->
+    <dimen name="login_field_margin_start">300dp</dimen>
+    <dimen name="login_field_margin_end">300dp</dimen>
+
+</resources>

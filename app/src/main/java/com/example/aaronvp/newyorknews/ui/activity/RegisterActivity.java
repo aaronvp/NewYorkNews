@@ -17,8 +17,6 @@ import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText firstName;
-    EditText lastName;
     EditText email;
     EditText password;
     Button registerButton;
@@ -30,8 +28,6 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         loginTextView = this.findViewById(R.id.textViewLogin);
-        firstName = this.findViewById(R.id.editTextFirstName);
-        lastName = this.findViewById(R.id.editTextLastName);
         email = this.findViewById(R.id.editTextEmail);
         password = this.findViewById(R.id.editTextPassword);
         registerButton = this.findViewById(R.id.button);

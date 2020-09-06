@@ -1,5 +1,6 @@
 package com.example.aaronvp.newyorknews;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class ApplicationConstants {
 
     public static final String INTENT_KEY_ARTICLE = "article";

@@ -35,7 +35,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     Context context;
     private List<Article> articleList;
-    private boolean splitScreen;
+    private final boolean splitScreen;
 
     private final ListItemClickListener listItemClickListener;
 

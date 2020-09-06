@@ -93,6 +93,11 @@ public class ArticleListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Get the Article Category
+     * @param newsDesk newsDesk
+     * @return Article Category
+     */
     public ArticleCategory getArticleCategory(String newsDesk) {
         return articleCategories.stream()
                 .filter(articleCategory -> articleCategory.getCategory().equals(newsDesk))
@@ -100,6 +105,11 @@ public class ArticleListActivity extends AppCompatActivity {
                 .orElse(null);
     }
 
+    /**
+     * Select the first Article
+     * @param fragment fragment
+     * @param position position
+     */
     private void selectFirstArticle(Fragment fragment, int position) {
         if ((fragment instanceof NewsListFragment) && isTwoPane() && fragment.isVisible()) {
             NewsListFragment newsListFragment = (NewsListFragment) fragment;
@@ -109,6 +119,11 @@ public class ArticleListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Get the News Desk for tab position
+     * @param position position
+     * @return NewsDesk
+     */
     private String getNewsDesk(int position) {
         switch (position) {
             case 0:
@@ -136,6 +151,9 @@ public class ArticleListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
+    /**
+     * Initialise the View Pager
+     */
     private void initViewPager() {
         viewPager2 = findViewById(R.id.viewPagerArticles);
         viewPager2.setAdapter(new ArticlesPagerAdapter(this));
@@ -157,6 +175,9 @@ public class ArticleListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Initialise Tab Layout
+     */
     private void initTabLayout() {
         TabLayout tabLayout = findViewById(R.id.tabLayout_articles);
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager2,
@@ -164,17 +185,25 @@ public class ArticleListActivity extends AppCompatActivity {
         tabLayoutMediator.attach();
     }
 
+    /**
+     * Initialise New York Times Link
+     */
     private void initNewYorkTimesLink() {
-        ImageView nytFooter = this.findViewById(R.id.iv_new_york_times);
-        nytFooter.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.addCategory(Intent.CATEGORY_BROWSABLE);
-            intent.setData(Uri.parse(NYT_WEBSITE));
-            startActivity(intent);
-        });
+        if (isTwoPane()) {
+            ImageView nytFooter = this.findViewById(R.id.iv_new_york_times);
+            nytFooter.setOnClickListener(v -> {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse(NYT_WEBSITE));
+                startActivity(intent);
+            });
+        }
     }
 
+    /**
+     * Receive Article from Widget
+     */
     private void receiveWidgetArticle() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
