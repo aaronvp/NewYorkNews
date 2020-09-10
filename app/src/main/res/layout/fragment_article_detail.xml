@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        android:layout_above="@+id/iv_nyt_logo">
+        android:layout_above="@+id/iv_new_york_times">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/toolbar_container"
@@ -93,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:textColor="#8fff" />
+                        android:textSize="@dimen/article_detail_article_by_line_text_size"/>
 
                 </LinearLayout>
 
@@ -115,11 +115,22 @@
                     android:paddingBottom="@dimen/article_detail_body_padding_bottom"
                     android:fontFamily="sans-serif"
                     android:textColor="@color/colorAccent"
-                    android:textColorLink="@color/colorPrimaryLight"
+                    android:textColorLink="@android:color/holo_blue_light"
                     android:lineSpacingMultiplier="1.25"
                     android:textSize="@dimen/article_detail_body_text_size"/>
 
             </FrameLayout>
+
+            <TextView
+                android:id="@+id/articleLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/article_detail_body_margin"
+                android:layout_marginRight="@dimen/article_detail_body_margin"
+                android:paddingBottom="@dimen/article_detail_link_padding_bottom"
+                android:textSize="@dimen/article_detail_article_link_text_size"
+                android:textColor="@android:color/holo_blue_light"
+                android:text="@string/article_link"/>
 
         </LinearLayout>
 
@@ -138,7 +149,7 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ImageView
-        android:id="@+id/iv_nyt_logo"
+        android:id="@+id/iv_new_york_times"
         android:layout_width="match_parent"
         android:layout_height="@dimen/nyt_attr_height"
         android:src="@drawable/data_nytimes"
@@ -147,5 +158,14 @@
         android:layout_gravity="center|bottom"
         android:layout_alignParentBottom="true"
         android:contentDescription="@string/nyt_attribution"/>
+
+    <ImageView
+        android:id="@+id/iv_loading_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:src="@drawable/empire"
+        android:contentDescription="@string/nyn_logo"/>
 
 </RelativeLayout>

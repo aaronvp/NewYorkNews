@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -20,7 +21,7 @@
             android:layout_height="match_parent"
             android:elevation="@dimen/toolbar_elevation"
             android:paddingBottom="@dimen/toolbar_padding"
-            android:background="@color/colorWhite">
+            android:background="@android:color/white">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -30,6 +31,17 @@
                 android:contentDescription="@string/app_header_logo"/>
 
         </androidx.appcompat.widget.Toolbar>
+
+        <!--<com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout_articles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabGravity="fill"
+            android:background="@android:color/white"
+            app:tabTextColor="@color/colorPrimaryDark"
+            app:tabIndicatorColor="@color/colorPrimaryDark"
+            app:tabSelectedTextColor="@android:color/holo_blue_light"
+            app:tabMode="scrollable" />-->
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -56,13 +68,13 @@
                 app:tabTextColor="@color/colorPrimaryDark"
                 app:tabIndicatorColor="@color/colorPrimaryDark"
                 app:tabSelectedTextColor="@android:color/holo_blue_light"
-                app:tabMode="scrollable"
-                android:layout_above="@+id/viewPagerArticles"/>
+                app:tabMode="scrollable"/>
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPagerArticles"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_below="@+id/tabLayout_articles"
+                android:layout_height="wrap_content"/>
 
         </RelativeLayout>
 
@@ -80,7 +92,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginTop="@dimen/article_detail_margin_top"
-            tools:ignore="InconsistentLayout" />
+            android:layout_marginEnd="@dimen/article_detail_margin_end"
+            tools:ignore="InconsistentLayout"/>
 
     </LinearLayout>
 

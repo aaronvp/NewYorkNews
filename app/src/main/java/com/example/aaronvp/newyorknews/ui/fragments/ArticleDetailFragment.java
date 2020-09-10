@@ -1,8 +1,10 @@
 package com.example.aaronvp.newyorknews.ui.fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +41,7 @@ import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE_CHILD;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE_SORT_BY;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.LINE_BREAK;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_WEBSITE;
 
 /**
  * A fragment representing a single Article detail screen.
@@ -54,10 +57,13 @@ public class ArticleDetailFragment extends Fragment {
     private TextView articleBody;
     private Toolbar toolbar;
     private LinearLayout metaBar;
+    private ImageView loadingImage;
+    private TextView articleLink;
+    private ImageView nytFooter;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private int metaBarColor;
     private FloatingActionButton floatingActionButton;
-    private boolean isBookMarked = false;
+    private boolean isBookMarked;
     private static FirebaseDatabase firebaseDatabase;
     private static DatabaseReference dbArticles;
     private Article article;
@@ -76,12 +82,12 @@ public class ArticleDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.article_detail_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
         collapsingToolbarLayout = rootView.findViewById(R.id.collapsing_toolbar);
         toolbar = rootView.findViewById(R.id.appToolbar);
 
         if (dbArticles == null) {
-            dbArticles = FirebaseDatabase.getInstance().getReference("articles");
+            dbArticles = FirebaseDatabase.getInstance().getReference(DATABASE_CHILD);
         }
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -103,11 +109,9 @@ public class ArticleDetailFragment extends Fragment {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     isShow = true;
-                    // articleDetailActivity.showOption(R.id.action_info);
                     toolbar.setBackgroundColor(metaBarColor);
                 } else if (isShow) {
                     isShow = false;
-                    // articleDetailActivity.hideOption(R.id.action_info);
                     toolbar.getBackground().setAlpha(0);
                 }
             }
@@ -118,16 +122,11 @@ public class ArticleDetailFragment extends Fragment {
         articleBody = rootView.findViewById(R.id.article_body);
         metaBar = rootView.findViewById(R.id.meta_bar);
         floatingActionButton = rootView.findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(v -> {
-            if (isBookMarked) {
-                dbArticles.child(getArticleId(article)).removeValue();
-                isBookMarked = false;
-            } else {
-                dbArticles.child(getArticleId(article)).setValue(article);
-                isBookMarked = true;
-            }
-            floatingActionButton.setSelected(isBookMarked);
-        });
+        nytFooter = rootView.findViewById(R.id.iv_new_york_times);
+        loadingImage = rootView.findViewById(R.id.iv_loading_overlay);
+        articleLink = rootView.findViewById(R.id.articleLink);
+
+        initNewYorkTimesLink();
 
         rootView.setAlpha(0);
         rootView.setVisibility(View.VISIBLE);
@@ -159,7 +158,8 @@ public class ArticleDetailFragment extends Fragment {
                 .load(image)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    public void onResourceReady(@NonNull Bitmap resource,
+                                                @Nullable Transition<? super Bitmap> transition) {
                         setTextColorForImage(resource);
                     }
 
@@ -172,20 +172,27 @@ public class ArticleDetailFragment extends Fragment {
         articleByLine.setText(article.getByLine().getOriginal());
         String bodyText = article.getLeadParagraph().concat(LINE_BREAK).concat(LINE_BREAK).concat(article.getSnippet());
         articleBody.setText(bodyText);
+        initFab();
+        initArticleLink(article);
+        hideLoadingOverlay();
     }
-
 
     private void setTextColorForImage(Bitmap firstPhoto) {
         Palette.from(firstPhoto)
                 .generate(palette -> {
                     if (palette != null) {
                         metaBarColor = palette.getDominantColor(Color.WHITE);
+                        Palette.Swatch swatch = palette.getDominantSwatch();
+                        if (swatch != null) {
+                            articleByLine.setTextColor(swatch.getTitleTextColor());
+                        }
                         metaBar.setBackgroundColor(metaBarColor);
                     }
                 });
     }
 
     private void isArticleBookmarked(Article article) {
+        isBookMarked = false;
         DatabaseReference getDbArticles = firebaseDatabase.getReference(DATABASE_CHILD);
         getDbArticles.orderByChild(DATABASE_SORT_BY).equalTo(article.getArticleId())
                 .addChildEventListener(new ChildEventListener() {
@@ -219,9 +226,53 @@ public class ArticleDetailFragment extends Fragment {
 
     }
 
+    private void initFab() {
+        floatingActionButton.setOnClickListener(v -> {
+            if (isBookMarked) {
+                dbArticles.child(getArticleId(article)).removeValue();
+                isBookMarked = false;
+            } else {
+                dbArticles.child(getArticleId(article)).setValue(article);
+                isBookMarked = true;
+            }
+        });
+        floatingActionButton.setSelected(isBookMarked);
+    }
+
+    /**
+     * Initialise New York Times Link
+     */
+    private void initArticleLink(Article article) {
+        articleLink.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            intent.setData(Uri.parse(article.getWebUrl()));
+            startActivity(intent);
+        });
+
+    }
+
+    /**
+     * Initialise New York Times Link
+     */
+    private void initNewYorkTimesLink() {
+        nytFooter.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            intent.setData(Uri.parse(NYT_WEBSITE));
+            startActivity(intent);
+        });
+
+    }
+
     private String getArticleId(Article article) {
         return article.getArticleId().substring(14);
     }
 
+    private void hideLoadingOverlay() {
+        loadingImage.setVisibility(View.GONE);
+    }
 
 }

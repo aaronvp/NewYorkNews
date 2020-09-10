@@ -4,7 +4,7 @@
     android:initialLayout="@layout/news_widget"
     android:minWidth="180dp"
     android:minHeight= "120dp"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:previewImage="@drawable/liberty_head"
     android:resizeMode="none"
-    android:updatePeriodMillis="60000"
+    android:updatePeriodMillis="300000"
     android:widgetCategory="home_screen"/>

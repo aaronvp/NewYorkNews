@@ -16,18 +16,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.06"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/logo_margin_start_end"
-        android:layout_marginEnd="@dimen/logo_margin_start_end"
-        android:contentDescription="@string/nyn_logo"
-        android:src="@drawable/nyn_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guidelineTop"
-        app:layout_constraintBottom_toBottomOf="@id/guideline2"/>
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
@@ -41,6 +29,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.40"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/logo_margin_start_end"
+        android:layout_marginEnd="@dimen/logo_margin_start_end"
+        android:contentDescription="@string/nyn_logo"
+        android:src="@drawable/nyn_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guidelineTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideline2"/>
 
     <EditText
         android:id="@+id/editTextEmail"
@@ -72,11 +72,30 @@
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:textSize="@dimen/login_text_size"
-        app:layout_constraintBottom_toTopOf="@id/button"
+        app:layout_constraintBottom_toTopOf="@id/editTextRepeatPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
         android:autofillHints=""/>
+
+    <EditText
+        android:id="@+id/editTextRepeatPassword"
+        android:layout_width="@dimen/zero_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/reg_field_margin_top"
+        android:layout_marginStart="@dimen/login_field_margin_start"
+        android:layout_marginEnd="@dimen/login_field_margin_end"
+        android:ems="10"
+        android:fontFamily="@font/berkshire_swash"
+        android:hint="@string/hint_repeat_password"
+        android:inputType="textPassword"
+        android:textSize="@dimen/login_text_size"
+        app:layout_constraintBottom_toTopOf="@id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
+        android:autofillHints=""
+        tools:ignore="InconsistentLayout"/>
 
     <Button
         android:id="@+id/button"
@@ -92,7 +111,7 @@
         app:layout_constraintBottom_toTopOf="@id/textViewLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextRepeatPassword" />
 
     <TextView
         android:id="@+id/textViewLogin"

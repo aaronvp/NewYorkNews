@@ -3,9 +3,12 @@ package com.example.aaronvp.newyorknews.ui.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
@@ -16,6 +19,7 @@ import com.example.aaronvp.newyorknews.model.ArticleCategory;
 import com.example.aaronvp.newyorknews.ui.adapter.ArticlesPagerAdapter;
 import com.example.aaronvp.newyorknews.ui.fragments.ArticleDetailFragment;
 import com.example.aaronvp.newyorknews.ui.fragments.NewsListFragment;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -34,17 +38,18 @@ import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATE
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_SPORTS;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_NEWS_CATEGORY_TRAVEL;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_WEBSITE;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.SAVE_INSTANCE_KEY_ARTICLES;
 
 /**
  * An activity representing a list of Articles. This activity
  * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
+ * handsets, the activity presents a list of articles, which when touched,
  * lead to a {@link ArticleDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
+ * article details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
 
-public class ArticleListActivity extends AppCompatActivity {
+public class ArticleListActivity extends BaseActivity {
 
     private ArticleDetailFragment articleDetailFragment;
     private List<ArticleCategory> articleCategories;
@@ -52,17 +57,33 @@ public class ArticleListActivity extends AppCompatActivity {
     @Setter
     private boolean twoPane;
     private ViewPager2 viewPager2;
+    private Snackbar snackBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_list);
-        articleCategories = new ArrayList<>();
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVE_INSTANCE_KEY_ARTICLES)) {
+                Log.i(SAVE_INSTANCE_KEY_ARTICLES, "OnSaveInstanceState - Loading Saved Articles");
+                articleCategories =  savedInstanceState.getParcelableArrayList(SAVE_INSTANCE_KEY_ARTICLES);
+            }
+        } else {
+            articleCategories = new ArrayList<>();
+        }
+
         initToolBar();
         initViewPager();
         initTabLayout();
         initNewYorkTimesLink();
         receiveWidgetArticle();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(SAVE_INSTANCE_KEY_ARTICLES,
+                new ArrayList<Parcelable>(articleCategories));
     }
 
     /**
@@ -83,7 +104,7 @@ public class ArticleListActivity extends AppCompatActivity {
     /**
      * Store the fetched articles once retrieved
      */
-    public void addArticleCategory(String newsDesk, List<Article> articles) {
+    public void cacheArticles(String newsDesk, List<Article> articles) {
         ArticleCategory articleCategory = getArticleCategory(newsDesk);
         if (articleCategory == null) {
             articleCategory = new ArticleCategory(newsDesk, articles);
@@ -95,6 +116,7 @@ public class ArticleListActivity extends AppCompatActivity {
 
     /**
      * Get the Article Category
+     *
      * @param newsDesk newsDesk
      * @return Article Category
      */
@@ -107,6 +129,7 @@ public class ArticleListActivity extends AppCompatActivity {
 
     /**
      * Select the first Article
+     *
      * @param fragment fragment
      * @param position position
      */
@@ -121,6 +144,7 @@ public class ArticleListActivity extends AppCompatActivity {
 
     /**
      * Get the News Desk for tab position
+     *
      * @param position position
      * @return NewsDesk
      */
@@ -189,7 +213,7 @@ public class ArticleListActivity extends AppCompatActivity {
      * Initialise New York Times Link
      */
     private void initNewYorkTimesLink() {
-        if (isTwoPane()) {
+        if (!isTwoPane()) {
             ImageView nytFooter = this.findViewById(R.id.iv_new_york_times);
             nytFooter.setOnClickListener(v -> {
                 Intent intent = new Intent();
@@ -214,4 +238,31 @@ public class ArticleListActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Get the Parent Layout
+     *
+     * @return Parent Layout View
+     */
+    public View getParentLayout() {
+        return findViewById(R.id.parentLayout);
+    }
+
+    /**
+     * Show connection error in SnackBar
+     */
+    public void alertConnectionError() {
+        snackBar = Snackbar.make(getParentLayout(), R.string.connection_error, Snackbar.LENGTH_INDEFINITE);
+        snackBar.show();
+    }
+
+    /**
+     * Dismiss connection error
+     */
+    public void dismissConnectionError() {
+        if (snackBar != null) {
+            snackBar.dismiss();
+        }
+    }
+
 }

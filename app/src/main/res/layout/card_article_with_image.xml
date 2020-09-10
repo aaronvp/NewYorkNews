@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/card_view_margin_start"
+    android:layout_marginEnd="@dimen/card_view_margin_end"
+    android:layout_marginTop="@dimen/card_view_margin_top"
+    android:layout_marginBottom="@dimen/card_view_margin_bottom"
+    card_view:cardCornerRadius="@dimen/card_view_corner_radius"
+    card_view:cardElevation="@dimen/card_view_elevation"
+    android:stateListAnimator="@animator/lift_on_touch"
+    android:clickable="true"
+    tools:keep="@layout/card_article_with_image"
+    android:focusable="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            card_view:layout_constraintGuide_end="@dimen/card_view_image_guideline1_end"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            card_view:layout_constraintGuide_end="@dimen/card_view_image_guideline2_end"/>
+
+        <TextView
+            android:id="@+id/article_headline"
+            android:layout_width="@dimen/zero_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/card_view_margin_default_half"
+            android:layout_marginBottom="@dimen/card_view_margin_default_half"
+            android:layout_marginStart="@dimen/card_view_headline_margin_start"
+            android:layout_marginEnd="@dimen/card_view_margin_default"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintBottom_toBottomOf="@id/article_date"
+            card_view:layout_constraintEnd_toEndOf="@id/guideline1"
+            card_view:layout_constraintStart_toStartOf="parent"
+            android:fontFamily="sans-serif"
+            android:textSize="@dimen/card_view_headline_text_size"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/article_date"
+            android:layout_width="@dimen/zero_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/card_view_margin_default_half"
+            android:layout_marginBottom="@dimen/card_view_margin_default"
+            android:layout_marginStart="@dimen/card_view_headline_margin_start"
+            android:layout_marginEnd="@dimen/card_view_margin_default"
+            card_view:layout_constraintTop_toBottomOf="@id/article_headline"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toEndOf="@id/guideline1"
+            card_view:layout_constraintStart_toStartOf="parent"
+            android:fontFamily="sans-serif"
+            android:textSize="@dimen/card_view_date_text_size"/>
+
+        <ImageView
+            android:id="@+id/image_article"
+            android:layout_width="@dimen/card_view_article_image"
+            android:layout_height="@dimen/card_view_article_image"
+            android:layout_marginTop="@dimen/card_view_margin_default"
+            android:layout_marginBottom="@dimen/card_view_margin_default"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toEndOf="@id/guideline1"
+            card_view:layout_constraintEnd_toStartOf="@id/guideline2"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/article_image" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
