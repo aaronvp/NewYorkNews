@@ -5,19 +5,20 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.NewsListFragment">
 
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/sports_recyclerView"
+            android:id="@+id/article_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:paddingTop="@dimen/recycler_view_padding_top"
-            android:background="@android:color/background_dark"
+            android:background="@android:color/background_light"
             android:visibility="gone"/>
-    </LinearLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/articleProgressBar"

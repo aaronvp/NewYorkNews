@@ -1,5 +1,7 @@
 package com.example.aaronvp.newyorknews;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -165,5 +167,17 @@ public class ArticleProcessor {
             }
         }
         return null;
+    }
+
+    /**
+     * Check if the device is a Tablet
+     * @param context context
+     * @return True if Tablet
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }

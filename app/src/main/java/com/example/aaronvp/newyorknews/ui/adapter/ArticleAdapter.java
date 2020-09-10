@@ -1,6 +1,7 @@
 package com.example.aaronvp.newyorknews.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +31,10 @@ import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_DATE_
 import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_DATE_HOUR_CUTOFF;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_DATE_ICON_PADDING;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_DATE_MINUTE_CUTOFF;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.IMAGE_ARTICLE;
+import static com.example.aaronvp.newyorknews.ApplicationConstants.TEXT_ARTICLE;
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
+public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
     private List<Article> articleList;
@@ -46,24 +49,44 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     @NonNull
     @Override
-    public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.article_card, parent, false);
-        return new ArticleViewHolder(view);
+        View view;
+        switch (viewType) {
+            case IMAGE_ARTICLE:
+                view = layoutInflater.inflate(R.layout.card_article_with_image, parent, false);
+                return new ArticleImageViewHolder(view);
+            case TEXT_ARTICLE:
+            default:
+                view = layoutInflater.inflate(R.layout.card_article_without_image, parent, false);
+                return new ArticleTextViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ArticleViewHolder articleViewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         Article article = articleList.get(position);
-        articleViewHolder.bind(article);
+        if (article != null) {
+            switch (getItemViewType(position)) {
+                case IMAGE_ARTICLE:
+                    ArticleImageViewHolder articleImageViewHolder = (ArticleImageViewHolder) viewHolder;
+                    articleImageViewHolder.bind(article);
+                    break;
+                case TEXT_ARTICLE:
+                default:
+                    ArticleTextViewHolder articleTextViewHolder = (ArticleTextViewHolder) viewHolder;
+                    articleTextViewHolder.bind(article);
+                    break;
+            }
 
-        if (splitScreen) {
-            int selectedPosition = 0;
-            if (position == selectedPosition) {
-                articleViewHolder.itemView.setSelected(true);
-            } else {
-                articleViewHolder.itemView.setSelected(false);
+            if (splitScreen) {
+                int selectedPosition = 0;
+                if (position == selectedPosition) {
+                    viewHolder.itemView.setSelected(true);
+                } else {
+                    viewHolder.itemView.setSelected(false);
+                }
             }
         }
     }
@@ -76,12 +99,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     /**
      * Caching of the children views for a RecipeStep item
      */
-    class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ArticleImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final ImageView ivArticleImage;
         final TextView tvArticleHeadline;
         final TextView tvArticleDate;
 
-        public ArticleViewHolder(@NonNull View itemView) {
+        public ArticleImageViewHolder(@NonNull View itemView) {
             super(itemView);
             ivArticleImage = itemView.findViewById(R.id.image_article);
             tvArticleHeadline = itemView.findViewById(R.id.article_headline);
@@ -97,6 +120,35 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                     .placeholder(R.drawable.newspaper)
                     .error(R.drawable.newspaper)
                     .into(ivArticleImage);
+            tvArticleHeadline.setText(article.getHeadline().getMain());
+            tvArticleDate.setText(getDateText(article.getPubDate()));
+            tvArticleDate.setCompoundDrawablesWithIntrinsicBounds
+                    (R.drawable.ic_baseline_time_16, 0, 0, 0);
+            tvArticleDate.setCompoundDrawablePadding(ARTICLE_DATE_ICON_PADDING);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            listItemClickListener.onListItemClick(clickedPosition);
+        }
+    }
+
+    /**
+     * Caching of the children views for a RecipeStep item
+     */
+    class ArticleTextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        final TextView tvArticleHeadline;
+        final TextView tvArticleDate;
+
+        public ArticleTextViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvArticleHeadline = itemView.findViewById(R.id.article_headline);
+            tvArticleDate = itemView.findViewById(R.id.article_date);
+            itemView.setOnClickListener(this);
+        }
+
+        void bind(Article article) {
             tvArticleHeadline.setText(article.getHeadline().getMain());
             tvArticleDate.setText(getDateText(article.getPubDate()));
             tvArticleDate.setCompoundDrawablesWithIntrinsicBounds
@@ -148,6 +200,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             Log.e("Date Parsing", Log.getStackTraceString(e));
         }
         return publishedDate;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        String image = ArticleProcessor.getArticleImageURL(articleList.get(position));
+        if (!TextUtils.isEmpty(image)) {
+            return IMAGE_ARTICLE;
+        } else {
+            return TEXT_ARTICLE;
+        }
     }
 
 }

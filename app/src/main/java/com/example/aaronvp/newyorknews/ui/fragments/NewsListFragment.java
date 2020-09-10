@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.aaronvp.newyorknews.ArticleProcessor;
 import com.example.aaronvp.newyorknews.ArticleService;
@@ -40,6 +41,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.aaronvp.newyorknews.ApplicationConstants.ARTICLE_BUFFER;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.DATABASE_CHILD;
 import static com.example.aaronvp.newyorknews.ApplicationConstants.FETCH_ARTICLES;
@@ -59,13 +61,17 @@ import static com.example.aaronvp.newyorknews.ApplicationConstants.NYT_SEARCH_BA
 
 public class NewsListFragment extends Fragment implements ArticleAdapter.ListItemClickListener {
 
-
     private ArticleAdapter articleAdapter;
-    private List<Article> articles;
+    private List<Article> articles = new ArrayList<>();
     private static Retrofit retrofit;
     private ArticleListActivity articleListActivity;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView articleRecyclerView;
+    private LinearLayoutManager linearLayoutManager;
     private ProgressBar progressBar;
+    private boolean loadingMore;
+    private boolean isRefreshing;
+    private int page;
     @Getter
     private String newsDeskValue;
 
@@ -80,7 +86,6 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
      * @param newsDeskValue Parameter 1.
      * @return A new instance of fragment SportsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NewsListFragment newInstance(String newsDeskValue) {
         NewsListFragment fragment = new NewsListFragment();
         Bundle args = new Bundle();
@@ -105,12 +110,47 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_news_list, container, false);
 
-        articleRecyclerView = rootView.findViewById(R.id.sports_recyclerView);
         progressBar = rootView.findViewById(R.id.articleProgressBar);
 
-        articleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // Swipe to Refresh
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeContainer);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            articleListActivity.dismissConnectionError();
+            isRefreshing = true;
+            fetchArticles();
+        });
+
+        // RecyclerView
+        articleRecyclerView = rootView.findViewById(R.id.article_recyclerView);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        articleRecyclerView.setLayoutManager(linearLayoutManager);
         articleAdapter = new ArticleAdapter(this, articleListActivity.isTwoPane());
         articleRecyclerView.setAdapter(articleAdapter);
+        articleRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!isBookMarksTab()) {
+                    int pos = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+                    // If the last visible article is within (ARTICLE_BUFFER) of the last article then load more
+                    if (!loadingMore && (pos > (articles.size() - ARTICLE_BUFFER))) {
+                        loadingMore = true;
+                        fetchArticles();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!isBookMarksTab()) { {
+                    if (!recyclerView.canScrollVertically(1)) {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                }}
+            }
+        });
 
         return rootView;
     }
@@ -135,13 +175,14 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
     }
 
     private void fetchArticles() {
-        /* Code used for debugging and testing
+        /*
+        // Code used for debugging and testing
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
         */
-        articles = getArticles();
-        if (articles != null) {
+        articles = getCachedArticles();
+        if (articles != null && !loadingMore &&!isRefreshing) {
             setArticles(articles);
             progressBar.setVisibility(View.GONE);
             articleRecyclerView.setVisibility(View.VISIBLE);
@@ -160,28 +201,48 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
         ArticleService articleService = retrofit.create(ArticleService.class);
         Call<ArticleSearch> call;
 
-        if (newsDeskValue.equals(NYT_NEWS_CATEGORY_LATEST)) {
-            call = articleService.getLatest(NYT_API_SORT_NEWEST, NYT_API_KEY);
-        } else {
-            call = articleService.getArticlesByNewsDesk(getNewsDeskQuery(), NYT_API_SORT_NEWEST, NYT_API_KEY);
+        if (isRefreshing) {
+            page = 0;
         }
 
+        if (newsDeskValue.equals(NYT_NEWS_CATEGORY_LATEST)) {
+            call = articleService.getLatest(NYT_API_SORT_NEWEST, NYT_API_KEY, page++);
+        } else {
+            call = articleService.getArticlesByNewsDesk(getNewsDeskQuery(), NYT_API_SORT_NEWEST, NYT_API_KEY, page++);
+        }
         call.enqueue(new Callback<ArticleSearch>() {
             @Override
             public void onResponse(@NonNull Call<ArticleSearch> call, @NonNull Response<ArticleSearch> response) {
-                articles = ArticleProcessor.validateArticleSearch(response.body());
+                articleListActivity.dismissConnectionError();
+                swipeRefreshLayout.setRefreshing(false);
+                List<Article> receivedArticles = ArticleProcessor.validateArticleSearch(response.body());
+                if (receivedArticles != null && !receivedArticles.isEmpty()) {
+                    if (isRefreshing) {
+                        articles.clear();
+                        isRefreshing = false;
+                    }
+                    if (articles == null || articles.isEmpty()) {
+                        articles = new ArrayList<>(receivedArticles);
+                    } else {
+                        articles.addAll(receivedArticles);
+                    }
+                }
                 if (articles != null && !articles.isEmpty()) {
-                    articleListActivity.addArticleCategory(newsDeskValue, articles);
+                    articleListActivity.cacheArticles(newsDeskValue, articles);
                     setArticles(articles);
                     progressBar.setVisibility(View.GONE);
                     articleRecyclerView.setVisibility(View.VISIBLE);
                     selectFirstArticle();
                 }
+                loadingMore = false;
             }
 
             @Override
             public void onFailure(@NonNull Call<ArticleSearch> call, @NonNull Throwable t) {
                 Log.e(FETCH_ARTICLES, Objects.requireNonNull(t.getMessage()));
+                articleListActivity.alertConnectionError();
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -195,7 +256,7 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
         }
     }
 
-    private List<Article> getArticles() {
+    private List<Article> getCachedArticles() {
         articleListActivity = (ArticleListActivity) getActivity();
         if (articleListActivity != null) {
             ArticleCategory articleCategory = articleListActivity.getArticleCategory(newsDeskValue);
@@ -222,7 +283,7 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
                                 Log.e(DATABASE, Objects.requireNonNull(e.getMessage()));
                             }
                         }
-                        articleListActivity.addArticleCategory(NYT_NEWS_CATEGORY_BOOKMARKS, articles);
+                        articleListActivity.cacheArticles(NYT_NEWS_CATEGORY_BOOKMARKS, articles);
                         setArticles(articles);
                         progressBar.setVisibility(View.GONE);
                         articleRecyclerView.setVisibility(View.VISIBLE);
@@ -239,4 +300,10 @@ public class NewsListFragment extends Fragment implements ArticleAdapter.ListIte
     private String getNewsDeskQuery() {
         return "news_desk:(" + newsDeskValue + ")";
     }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean isBookMarksTab() {
+        return (newsDeskValue.equals(NYT_NEWS_CATEGORY_BOOKMARKS));
+    }
 }
+

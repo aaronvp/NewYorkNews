@@ -96,7 +96,7 @@ public class NewsWidget extends AppWidgetProvider {
 
         ArticleService articleService = retrofit.create(ArticleService.class);
         Call<ArticleSearch> call = articleService
-                .getLatest(NYT_API_SORT_NEWEST, NYT_API_KEY);
+                .getLatest(NYT_API_SORT_NEWEST, NYT_API_KEY, 0);
         call.enqueue(new Callback<ArticleSearch>() {
             @Override
             public void onResponse(@NonNull Call<ArticleSearch> call, @NonNull Response<ArticleSearch> response) {

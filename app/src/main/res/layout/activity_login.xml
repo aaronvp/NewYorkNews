@@ -16,6 +16,20 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.06" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.11"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.40"/>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,48 +37,41 @@
         android:layout_marginEnd="@dimen/logo_margin_start_end"
         android:contentDescription="@string/nyn_logo"
         android:src="@drawable/nyn_logo"
-        app:layout_constraintBottom_toBottomOf="@id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
-        app:layout_constraintVertical_bias="0.00"/>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5"/>
+        app:layout_constraintBottom_toBottomOf="@id/guideline2"/>
 
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="@dimen/zero_width"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/reg_field_margin_top"
         android:layout_marginStart="@dimen/login_field_margin_start"
         android:layout_marginEnd="@dimen/login_field_margin_end"
         android:ems="10"
         android:fontFamily="@font/berkshire_swash"
-        android:hint="@string/email_hint"
         android:inputType="textEmailAddress"
-        android:textSize="@dimen/login_text_size"
+        android:textSize="24sp"
+        android:hint="@string/hint_email_address"
         app:layout_constraintBottom_toTopOf="@id/editTextPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/guideline3"
         android:autofillHints=""/>
 
     <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="@dimen/zero_width"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/reg_field_margin_top"
         android:layout_marginStart="@dimen/login_field_margin_start"
         android:layout_marginEnd="@dimen/login_field_margin_end"
         android:ems="10"
         android:fontFamily="@font/berkshire_swash"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
-        android:textSize="24sp"
+        android:textSize="@dimen/login_text_size"
         app:layout_constraintBottom_toTopOf="@id/loginButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

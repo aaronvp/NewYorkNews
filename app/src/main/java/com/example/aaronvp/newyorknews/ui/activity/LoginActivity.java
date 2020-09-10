@@ -8,14 +8,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.aaronvp.newyorknews.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     TextView registerTextView;
     EditText email;

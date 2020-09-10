@@ -8,17 +8,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.aaronvp.newyorknews.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
 
     EditText email;
     EditText password;
+    EditText repeatPassword;
     Button registerButton;
     TextView loginTextView;
     FirebaseAuth firebaseAuth;
@@ -30,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
         loginTextView = this.findViewById(R.id.textViewLogin);
         email = this.findViewById(R.id.editTextEmail);
         password = this.findViewById(R.id.editTextPassword);
+        repeatPassword = this.findViewById(R.id.editTextRepeatPassword);
         registerButton = this.findViewById(R.id.button);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -51,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean validateRegistration() {
         String emailText = email.getText().toString().trim();
         String passwordText = password.getText().toString().trim();
+        String repeatPasswordText = repeatPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(emailText)) {
             email.setError(getString(R.string.err_email_req));
@@ -64,6 +65,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (passwordText.length() < 6) {
             password.setError(getString(R.string.err_password_length));
+            return false;
+        }
+
+        if (TextUtils.isEmpty(repeatPasswordText)) {
+            repeatPassword.setError(getString(R.string.err_repeat_password_req));
+            return false;
+        }
+
+        if (!passwordText.equals(repeatPasswordText)) {
+            repeatPassword.setError(getString(R.string.err_passwords_not_matching));
             return false;
         }
 
